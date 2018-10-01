@@ -57,6 +57,18 @@
   <Import Condition="exists('..\..\..\hltypes\msvc\vs2013\props-generic\system.props')" Project="..\..\..\hltypes\msvc\vs2013\props-generic\system.props" />
   <Import Condition="!exists('..\..\..\hltypes\msvc\vs2013\props-generic\system.props')" Project="..\..\..\theoraplayer\msvc\vs2013\props-generic\system.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PlatformToolset>v120_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='DebugS|Win32'">
+    <PlatformToolset>v120_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='ReleaseS|Win32'">
+    <PlatformToolset>v120_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PlatformToolset>v120_xp</PlatformToolset>
+  </PropertyGroup>
   <Import Project="props\default.props" />
   <Import Condition="exists('..\..\..\hltypes\msvc\vs2013\props-generic\platform-$(Platform).props')" Project="..\..\..\hltypes\msvc\vs2013\props-generic\platform-$(Platform).props" />
   <Import Condition="!exists('..\..\..\hltypes\msvc\vs2013\props-generic\platform-$(Platform).props')" Project="..\..\..\theoraplayer\msvc\vs2013\props-generic\platform-$(Platform).props" />
@@ -66,6 +78,16 @@
   <Import Condition="exists('..\..\..\hltypes\msvc\vs2013\props-generic\build-defaults.props')" Project="..\..\..\hltypes\msvc\vs2013\props-generic\build-defaults.props" />
   <Import Condition="!exists('..\..\..\hltypes\msvc\vs2013\props-generic\build-defaults.props')" Project="..\..\..\theoraplayer\msvc\vs2013\props-generic\build-defaults.props" />
   <Import Project="props\configuration.props" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseS|Win32'">
+    <PostBuildEvent>
+      <Command>copy /y "$(TargetPath)" "$(SolutionDir)..\libtheora\lib\$(Platform)_static\2013\$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PostBuildEvent>
+      <Command>copy /y "$(TargetPath)" "$(SolutionDir)..\libtheora\lib\$(Platform)\2013\$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\bitwise.c" />
     <ClCompile Include="..\..\src\framing.c" />

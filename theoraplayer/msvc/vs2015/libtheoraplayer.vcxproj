@@ -1,6 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="DebugS_Theora|x64">
+      <Configuration>DebugS_Theora</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="DebugS|x64">
+      <Configuration>DebugS</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_Theora|x64">
+      <Configuration>Debug_Theora</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
@@ -8,6 +20,22 @@
     <ProjectConfiguration Include="DebugS|Win32">
       <Configuration>DebugS</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseS_Theora|x64">
+      <Configuration>ReleaseS_Theora</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseS|x64">
+      <Configuration>ReleaseS</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_Theora|x64">
+      <Configuration>Release_Theora</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
@@ -97,10 +125,15 @@
       <Configuration>ReleaseS_Theora</Configuration>
       <Platform>Android-x86</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{ABE6907D-00FF-4198-8D36-65115AF1D868}</ProjectGuid>
     <RootNamespace>theoraplayer</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Condition="exists('..\..\..\hltypes\msvc\vs2015\props-generic\system.props')" Project="..\..\..\hltypes\msvc\vs2015\props-generic\system.props" />
   <Import Condition="!exists('..\..\..\hltypes\msvc\vs2015\props-generic\system.props')" Project="props-generic\system.props" />
@@ -113,14 +146,28 @@
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug_Theora|Win32'">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Theora|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='DebugS_Theora|Win32'">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugS_Theora|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release_Theora|Win32'">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Theora|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='ReleaseS_Theora|Win32'">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseS_Theora|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
@@ -156,6 +203,39 @@
   <Import Condition="exists('..\..\..\hltypes\msvc\vs2015\props-generic\build-defaults.props')" Project="..\..\..\hltypes\msvc\vs2015\props-generic\build-defaults.props" />
   <Import Condition="!exists('..\..\..\hltypes\msvc\vs2015\props-generic\build-defaults.props')" Project="props-generic\build-defaults.props" />
   <Import Project="props\configuration.props" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseS|Win32'">
+    <PostBuildEvent>
+      <Command>copy /y "$(TargetPath)" "$(SolutionDir)..\libtheora\lib\$(Platform)_static\2015\$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">
+    <PostBuildEvent>
+      <Command>copy /y "$(TargetPath)" "$(SolutionDir)..\libtheora\lib\$(Platform)_static\2015\$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PostBuildEvent>
+      <Command>copy /y "$(TargetPath)" "$(SolutionDir)..\libtheora\lib\$(Platform)\2015\$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PostBuildEvent>
+      <Command>copy /y "$(TargetPath)" "$(SolutionDir)..\libtheora\lib\$(Platform)\2015\$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseS_Theora|Win32'">
+    <PostBuildEvent>
+      <Command>copy /y "$(TargetPath)" "$(SolutionDir)..\libtheora\lib\$(Platform)_static\2015\$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseS_Theora|x64'">
+    <PostBuildEvent>
+      <Command>copy /y "$(TargetPath)" "$(SolutionDir)..\libtheora\lib\$(Platform)_static\2015\$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+    <ClCompile>
+      <PreprocessorDefinitions>_USE_THEORA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\AudioInterface.cpp" />
     <ClCompile Include="..\..\src\AudioInterfaceFactory.cpp" />
@@ -177,6 +257,7 @@
     <ClCompile Include="..\..\src\WorkerThread.cpp" />
     <ClCompile Include="..\..\src\YUV\android\cpu-features.c">
       <ExcludedFromBuild Condition="'$(Platform)'=='Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Platform)'=='x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\src\YUV\libyuv\src\compare.cc" />
     <ClCompile Include="..\..\src\YUV\libyuv\src\compare_common.cc" />

@@ -62,17 +62,21 @@
   <Import Condition="!exists('..\..\..\hltypes\msvc\vs2013\props-generic\platform-$(Platform).props')" Project="..\..\..\theoraplayer\msvc\vs2013\props-generic\platform-$(Platform).props" />
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='DebugS|Win32'">
     <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v120_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='ReleaseS|Win32'">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v120_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Android'">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -109,13 +113,19 @@
   <ItemDefinitionGroup>
     <CustomBuild>
       <Message>Assembling %(Filename)%(Extension)</Message>
-	  <TargetFileName>$(IntDir)asm\%(FileName).obj</TargetFileName>
+      <TargetFileName>$(IntDir)asm\%(FileName).obj</TargetFileName>
       <Outputs>%(TargetFileName)</Outputs>
       <Command Condition="'$(WholeProgramOptimization)'!='true'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
 vsyasm -Xvc -g cv8 -f win32 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
       <Command Condition="'$(WholeProgramOptimization)'=='true'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
 vsyasm -Xvc -f win32 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
     </CustomBuild>
+    <PostBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|Win32'">copy /y "$(TargetPath)" "$(SolutionDir)..\libtheora\lib\$(Platform)_static\2013\$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy /y "$(TargetPath)" "$(SolutionDir)..\libtheora\lib\$(Platform)\2013\$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\vpx\src\vpx_decoder.c" />

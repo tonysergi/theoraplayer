@@ -1,6 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="DebugS|x64">
+      <Configuration>DebugS</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
@@ -8,6 +12,14 @@
     <ProjectConfiguration Include="DebugS|Win32">
       <Configuration>DebugS</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseS|x64">
+      <Configuration>ReleaseS</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
@@ -49,14 +61,23 @@
       <Configuration>ReleaseS</Configuration>
       <Platform>Android-x86</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3D1576F4-0991-473C-82D7-F22252CA4754}</ProjectGuid>
     <RootNamespace>clipwebm</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Condition="exists('..\..\..\..\..\hltypes\msvc\vs2015\props-generic\system.props')" Project="..\..\..\..\..\hltypes\msvc\vs2015\props-generic\system.props" />
   <Import Condition="!exists('..\..\..\..\..\hltypes\msvc\vs2015\props-generic\system.props')" Project="..\..\..\..\msvc\vs2015\props-generic\system.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140_xp</PlatformToolset>
+  </PropertyGroup>
   <Import Project="props\default.props" />
   <Import Condition="exists('..\..\..\..\..\hltypes\msvc\vs2015\props-generic\platform-$(Platform).props')" Project="..\..\..\..\..\hltypes\msvc\vs2015\props-generic\platform-$(Platform).props" />
   <Import Condition="!exists('..\..\..\..\..\hltypes\msvc\vs2015\props-generic\platform-$(Platform).props')" Project="..\..\..\..\msvc\vs2015\props-generic\platform-$(Platform).props" />
@@ -66,6 +87,29 @@
   <Import Condition="exists('..\..\..\..\..\hltypes\msvc\vs2015\props-generic\build-defaults.props')" Project="..\..\..\..\..\hltypes\msvc\vs2015\props-generic\build-defaults.props" />
   <Import Condition="!exists('..\..\..\..\..\hltypes\msvc\vs2015\props-generic\build-defaults.props')" Project="..\..\..\..\msvc\vs2015\props-generic\build-defaults.props" />
   <Import Project="props\configuration.props" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseS|Win32'">
+    <PostBuildEvent>
+      <Command>copy /y "$(TargetPath)" "$(SolutionDir)..\libtheora\lib\$(Platform)_static\2015\$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">
+    <PostBuildEvent>
+      <Command>copy /y "$(TargetPath)" "$(SolutionDir)..\libtheora\lib\$(Platform)_static\2015\$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+    <ClCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PostBuildEvent>
+      <Command>copy /y "$(TargetPath)" "$(SolutionDir)..\libtheora\lib\$(Platform)\2015\$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PostBuildEvent>
+      <Command>copy /y "$(TargetPath)" "$(SolutionDir)..\libtheora\lib\$(Platform)\2015\$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\fileproperties.rc">
       <ExcludedFromBuild Condition="'$(Platform)'=='Android' or '$(Platform)'=='Android-x86' or '$(ConfigurationType)'=='StaticLibrary'">true</ExcludedFromBuild>

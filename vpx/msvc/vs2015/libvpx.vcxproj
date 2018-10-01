@@ -1,6 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="DebugS|x64">
+      <Configuration>DebugS</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
@@ -8,6 +12,14 @@
     <ProjectConfiguration Include="DebugS|Win32">
       <Configuration>DebugS</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseS|x64">
+      <Configuration>ReleaseS</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
@@ -49,10 +61,15 @@
       <Configuration>ReleaseS</Configuration>
       <Platform>Android-x86</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D6940D7E-CAFF-40D9-9322-A53E7D322393}</ProjectGuid>
     <RootNamespace>vpx</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Condition="exists('..\..\..\hltypes\msvc\vs2015\props-generic\system.props')" Project="..\..\..\hltypes\msvc\vs2015\props-generic\system.props" />
   <Import Condition="!exists('..\..\..\hltypes\msvc\vs2015\props-generic\system.props')" Project="..\..\..\theoraplayer\msvc\vs2015\props-generic\system.props" />
@@ -63,14 +80,28 @@
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ConfigurationType>StaticLibrary</ConfigurationType>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='DebugS|Win32'">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugS|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='ReleaseS|Win32'">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
@@ -109,13 +140,24 @@
   <ItemDefinitionGroup>
     <CustomBuild>
       <Message>Assembling %(Filename)%(Extension)</Message>
-	  <TargetFileName>$(IntDir)asm\%(FileName).obj</TargetFileName>
+      <TargetFileName>$(IntDir)asm\%(FileName).obj</TargetFileName>
       <Outputs>%(TargetFileName)</Outputs>
       <Command Condition="'$(WholeProgramOptimization)'!='true'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
 vsyasm -Xvc -g cv8 -f win32 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
       <Command Condition="'$(WholeProgramOptimization)'=='true'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
 vsyasm -Xvc -f win32 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
     </CustomBuild>
+    <PostBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|Win32'">copy /y "$(TargetPath)" "$(SolutionDir)..\libtheora\lib\$(Platform)_static\2015\$(TargetName)$(TargetExt)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">copy /y "$(TargetPath)" "$(SolutionDir)..\libtheora\lib\$(Platform)_static\2015\$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy /y "$(TargetPath)" "$(SolutionDir)..\libtheora\lib\$(Platform)\2015\$(TargetName)$(TargetExt)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy /y "$(TargetPath)" "$(SolutionDir)..\libtheora\lib\$(Platform)\2015\$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+    <ClCompile>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">NDEBUG;_WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\vpx\src\vpx_decoder.c" />
@@ -129,32 +171,67 @@ vsyasm -Xvc -f win32 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</
     <ClCompile Include="..\..\vpx_scale\generic\yv12extend.c" />
     <ClCompile Include="..\..\vpx_scale\generic\gen_scalers.c" />
     <ClCompile Include="..\..\vpx_scale\vpx_scale_rtcd.c" />
-    <CustomBuild Include="..\..\vpx_ports\emms.asm" />
+    <CustomBuild Include="..\..\vpx_ports\emms.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+    </CustomBuild>
     <ClCompile Include="..\..\vpx_dsp\prob.c" />
     <ClCompile Include="..\..\vpx_dsp\bitwriter.c" />
     <ClCompile Include="..\..\vpx_dsp\bitwriter_buffer.c" />
     <ClCompile Include="..\..\vpx_dsp\bitreader.c" />
     <ClCompile Include="..\..\vpx_dsp\bitreader_buffer.c" />
     <ClCompile Include="..\..\vpx_dsp\intrapred.c" />
-    <CustomBuild Include="..\..\vpx_dsp\x86\intrapred_sse2.asm" />
-    <CustomBuild Include="..\..\vpx_dsp\x86\intrapred_ssse3.asm" />
-    <CustomBuild Include="..\..\vpx_dsp\x86\vpx_subpixel_8t_ssse3.asm" />
+    <CustomBuild Include="..\..\vpx_dsp\x86\intrapred_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vpx_dsp\x86\intrapred_ssse3.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vpx_dsp\x86\vpx_subpixel_8t_ssse3.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
     <ClCompile Include="..\..\vpx_dsp\vpx_convolve.c" />
     <ClCompile Include="..\..\vpx_dsp\x86\vpx_asm_stubs.c" />
-    <CustomBuild Include="..\..\vpx_dsp\x86\vpx_subpixel_8t_sse2.asm" />
-    <CustomBuild Include="..\..\vpx_dsp\x86\vpx_subpixel_bilinear_sse2.asm" />
-    <CustomBuild Include="..\..\vpx_dsp\x86\vpx_subpixel_bilinear_ssse3.asm" />
+    <CustomBuild Include="..\..\vpx_dsp\x86\vpx_subpixel_8t_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vpx_dsp\x86\vpx_subpixel_bilinear_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vpx_dsp\x86\vpx_subpixel_bilinear_ssse3.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
     <ClCompile Include="..\..\vpx_dsp\x86\vpx_subpixel_8t_intrin_avx2.c">
       <AdditionalOptions>/arch:AVX</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="..\..\vpx_dsp\x86\vpx_subpixel_8t_intrin_ssse3.c" />
-    <CustomBuild Include="..\..\vpx_dsp\x86\vpx_convolve_copy_sse2.asm" />
+    <CustomBuild Include="..\..\vpx_dsp\x86\vpx_convolve_copy_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
     <ClCompile Include="..\..\vpx_dsp\loopfilter.c" />
     <ClCompile Include="..\..\vpx_dsp\x86\loopfilter_sse2.c" />
     <ClCompile Include="..\..\vpx_dsp\x86\loopfilter_avx2.c">
       <AdditionalOptions>/arch:AVX</AdditionalOptions>
     </ClCompile>
-    <CustomBuild Include="..\..\vpx_dsp\x86\loopfilter_mmx.asm" />
+    <CustomBuild Include="..\..\vpx_dsp\x86\loopfilter_mmx.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
     <ClCompile Include="..\..\vpx_dsp\fwd_txfm.c" />
     <ClCompile Include="..\..\vpx_dsp\x86\fwd_txfm_sse2.c" />
     <ClCompile Include="..\..\vpx_dsp\x86\fwd_txfm_avx2.c">
@@ -162,37 +239,81 @@ vsyasm -Xvc -f win32 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</
     </ClCompile>
     <ClCompile Include="..\..\vpx_dsp\inv_txfm.c" />
     <ClCompile Include="..\..\vpx_dsp\x86\inv_txfm_sse2.c" />
-    <CustomBuild Include="..\..\vpx_dsp\x86\inv_wht_sse2.asm" />
+    <CustomBuild Include="..\..\vpx_dsp\x86\inv_wht_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
     <ClCompile Include="..\..\vpx_dsp\quantize.c" />
     <ClCompile Include="..\..\vpx_dsp\x86\quantize_sse2.c" />
     <ClCompile Include="..\..\vpx_dsp\sad.c" />
     <ClCompile Include="..\..\vpx_dsp\subtract.c" />
-    <CustomBuild Include="..\..\vpx_dsp\x86\sad_mmx.asm" />
-    <CustomBuild Include="..\..\vpx_dsp\x86\sad_sse3.asm" />
-    <CustomBuild Include="..\..\vpx_dsp\x86\sad_ssse3.asm" />
-    <CustomBuild Include="..\..\vpx_dsp\x86\sad_sse4.asm" />
+    <CustomBuild Include="..\..\vpx_dsp\x86\sad_mmx.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vpx_dsp\x86\sad_sse3.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vpx_dsp\x86\sad_ssse3.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vpx_dsp\x86\sad_sse4.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
     <ClCompile Include="..\..\vpx_dsp\x86\sad4d_avx2.c">
       <AdditionalOptions>/arch:AVX</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="..\..\vpx_dsp\x86\sad_avx2.c">
       <AdditionalOptions>/arch:AVX</AdditionalOptions>
     </ClCompile>
-    <CustomBuild Include="..\..\vpx_dsp\x86\sad4d_sse2.asm" />
-    <CustomBuild Include="..\..\vpx_dsp\x86\sad_sse2.asm" />
-    <CustomBuild Include="..\..\vpx_dsp\x86\subtract_sse2.asm" />
+    <CustomBuild Include="..\..\vpx_dsp\x86\sad4d_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vpx_dsp\x86\sad_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vpx_dsp\x86\subtract_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
     <ClCompile Include="..\..\vpx_dsp\variance.c" />
     <ClCompile Include="..\..\vpx_dsp\x86\variance_mmx.c" />
-    <CustomBuild Include="..\..\vpx_dsp\x86\variance_impl_mmx.asm" />
+    <CustomBuild Include="..\..\vpx_dsp\x86\variance_impl_mmx.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
     <ClCompile Include="..\..\vpx_dsp\x86\variance_sse2.c" />
     <ClCompile Include="..\..\vpx_dsp\x86\halfpix_variance_sse2.c" />
-    <CustomBuild Include="..\..\vpx_dsp\x86\halfpix_variance_impl_sse2.asm" />
+    <CustomBuild Include="..\..\vpx_dsp\x86\halfpix_variance_impl_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
     <ClCompile Include="..\..\vpx_dsp\x86\variance_avx2.c">
       <AdditionalOptions>/arch:AVX</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="..\..\vpx_dsp\x86\variance_impl_avx2.c">
       <AdditionalOptions>/arch:AVX</AdditionalOptions>
     </ClCompile>
-    <CustomBuild Include="..\..\vpx_dsp\x86\subpel_variance_sse2.asm" />
+    <CustomBuild Include="..\..\vpx_dsp\x86\subpel_variance_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
     <ClCompile Include="..\..\vpx_dsp\vpx_dsp_rtcd.c" />
     <ClCompile Include="..\..\vpx_util\vpx_thread.c" />
     <ClCompile Include="..\..\vp8\common\alloccommon.c" />
@@ -226,25 +347,93 @@ vsyasm -Xvc -f win32 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</
     <ClCompile Include="..\..\vp8\common\x86\loopfilter_x86.c" />
     <ClCompile Include="..\..\vp8\common\mfqe.c" />
     <ClCompile Include="..\..\vp8\common\postproc.c" />
-    <CustomBuild Include="..\..\vp8\common\x86\dequantize_mmx.asm" />
+    <CustomBuild Include="..\..\vp8\common\x86\dequantize_mmx.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
     <ClCompile Include="..\..\vp8\common\x86\idct_blk_mmx.c" />
-    <CustomBuild Include="..\..\vp8\common\x86\idctllm_mmx.asm" />
-    <CustomBuild Include="..\..\vp8\common\x86\iwalsh_mmx.asm" />
-    <CustomBuild Include="..\..\vp8\common\x86\vp8_loopfilter_mmx.asm" />
-    <CustomBuild Include="..\..\vp8\common\x86\recon_mmx.asm" />
-    <CustomBuild Include="..\..\vp8\common\x86\subpixel_mmx.asm" />
-    <CustomBuild Include="..\..\vp8\common\x86\copy_sse2.asm" />
+    <CustomBuild Include="..\..\vp8\common\x86\idctllm_mmx.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vp8\common\x86\iwalsh_mmx.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vp8\common\x86\vp8_loopfilter_mmx.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vp8\common\x86\recon_mmx.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vp8\common\x86\subpixel_mmx.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vp8\common\x86\copy_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
     <ClCompile Include="..\..\vp8\common\x86\idct_blk_sse2.c" />
-    <CustomBuild Include="..\..\vp8\common\x86\idctllm_sse2.asm" />
-    <CustomBuild Include="..\..\vp8\common\x86\recon_sse2.asm" />
-    <CustomBuild Include="..\..\vp8\common\x86\subpixel_sse2.asm" />
-    <CustomBuild Include="..\..\vp8\common\x86\loopfilter_sse2.asm" />
-    <CustomBuild Include="..\..\vp8\common\x86\iwalsh_sse2.asm" />
-    <CustomBuild Include="..\..\vp8\common\x86\copy_sse3.asm" />
-    <CustomBuild Include="..\..\vp8\common\x86\subpixel_ssse3.asm" />
-    <CustomBuild Include="..\..\vp8\common\x86\postproc_mmx.asm" />
-    <CustomBuild Include="..\..\vp8\common\x86\mfqe_sse2.asm" />
-    <CustomBuild Include="..\..\vp8\common\x86\postproc_sse2.asm" />
+    <CustomBuild Include="..\..\vp8\common\x86\idctllm_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vp8\common\x86\recon_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vp8\common\x86\subpixel_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vp8\common\x86\loopfilter_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vp8\common\x86\iwalsh_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vp8\common\x86\copy_sse3.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vp8\common\x86\subpixel_ssse3.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vp8\common\x86\postproc_mmx.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vp8\common\x86\mfqe_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vp8\common\x86\postproc_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
     <ClCompile Include="..\..\vp8\vp8_cx_iface.c" />
     <ClCompile Include="..\..\vp8\encoder\bitstream.c" />
     <ClCompile Include="..\..\vp8\encoder\boolhuff.c" />
@@ -269,18 +458,41 @@ vsyasm -Xvc -f win32 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</
     <ClCompile Include="..\..\vp8\encoder\tokenize.c" />
     <ClCompile Include="..\..\vp8\encoder\treewriter.c" />
     <ClCompile Include="..\..\vp8\encoder\temporal_filter.c" />
-    <CustomBuild Include="..\..\vp8\encoder\x86\dct_mmx.asm" />
+    <CustomBuild Include="..\..\vp8\encoder\x86\dct_mmx.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
     <ClCompile Include="..\..\vp8\encoder\x86\vp8_enc_stubs_mmx.c" />
-    <CustomBuild Include="..\..\vp8\encoder\x86\dct_sse2.asm" />
-    <CustomBuild Include="..\..\vp8\encoder\x86\fwalsh_sse2.asm" />
+    <CustomBuild Include="..\..\vp8\encoder\x86\dct_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vp8\encoder\x86\fwalsh_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
     <ClCompile Include="..\..\vp8\encoder\x86\vp8_quantize_sse2.c" />
     <ClCompile Include="..\..\vp8\encoder\x86\quantize_ssse3.c" />
     <ClCompile Include="..\..\vp8\encoder\x86\quantize_sse4.c" />
     <ClCompile Include="..\..\vp8\encoder\x86\denoising_sse2.c" />
-    <CustomBuild Include="..\..\vp8\encoder\x86\temporal_filter_apply_sse2.asm" />
+    <CustomBuild Include="..\..\vp8\encoder\x86\temporal_filter_apply_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
     <ClCompile Include="..\..\vp8\encoder\x86\vp8_enc_stubs_sse2.c" />
-    <CustomBuild Include="..\..\vp8\encoder\x86\quantize_mmx.asm" />
-    <CustomBuild Include="..\..\vp8\encoder\x86\encodeopt.asm" />
+    <CustomBuild Include="..\..\vp8\encoder\x86\quantize_mmx.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vp8\encoder\x86\encodeopt.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+    </CustomBuild>
     <ClCompile Include="..\..\vp8\vp8_dx_iface.c" />
     <ClCompile Include="..\..\vp8\decoder\dboolhuff.c" />
     <ClCompile Include="..\..\vp8\decoder\decodemv.c" />
@@ -347,13 +559,25 @@ vsyasm -Xvc -f win32 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</
     <ClCompile Include="..\..\vp9\encoder\vp9_temporal_filter.c" />
     <ClCompile Include="..\..\vp9\encoder\vp9_mbgraph.c" />
     <ClCompile Include="..\..\vp9\encoder\x86\vp9_avg_intrin_sse2.c" />
-    <CustomBuild Include="..\..\vp9\encoder\x86\vp9_temporal_filter_apply_sse2.asm" />
+    <CustomBuild Include="..\..\vp9\encoder\x86\vp9_temporal_filter_apply_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
     <ClCompile Include="..\..\vp9\encoder\x86\vp9_quantize_sse2.c" />
     <ClCompile Include="..\..\vp9\encoder\x86\vp9_diamond_search_sad_avx.c">
       <AdditionalOptions>/arch:AVX</AdditionalOptions>
     </ClCompile>
-    <CustomBuild Include="..\..\vp9\encoder\x86\vp9_dct_mmx.asm" />
-    <CustomBuild Include="..\..\vp9\encoder\x86\vp9_error_sse2.asm" />
+    <CustomBuild Include="..\..\vp9\encoder\x86\vp9_dct_mmx.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\vp9\encoder\x86\vp9_error_sse2.asm">
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">IF EXIST "$(IntDir)asm\%(Filename).obj" del "$(IntDir)asm\%(Filename).obj" /q
+vsyasm -Xvc -f x64 -I"../.." -o "$(IntDir)asm\%(Filename).obj" "%(FullPath)"</Command>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseS|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
     <ClCompile Include="..\..\vp9\encoder\x86\vp9_dct_sse2.c" />
     <ClCompile Include="..\..\vp9\encoder\x86\vp9_dct_ssse3.c" />
     <ClCompile Include="..\..\vp9\encoder\x86\vp9_error_intrin_avx2.c">

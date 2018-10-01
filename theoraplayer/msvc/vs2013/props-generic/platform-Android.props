@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="Globals">
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <AndroidSdkLevel>25</AndroidSdkLevel>
@@ -12,7 +12,7 @@
   <Import Condition="(exists('..\..\..\msvc\$(HLTypesMsvcType)\$(Platform).props'))" Project="..\..\..\msvc\$(HLTypesMsvcType)\$(Platform).props"/>
   <Import Condition="(exists('..\..\..\..\msvc\$(HLTypesMsvcType)\$(Platform).props'))" Project="..\..\..\..\msvc\$(HLTypesMsvcType)\$(Platform).props"/>
   <PropertyGroup>
-    <HLTypesDefaultPlatformLibDirectory>android\x86</HLTypesDefaultPlatformLibDirectory>
+    <HLTypesDefaultPlatformLibDirectory>android\armeabi-v7a</HLTypesDefaultPlatformLibDirectory>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ProjectReference>
@@ -20,7 +20,7 @@
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
     <ClCompile>
-      <PreprocessorDefinitions>_ANDROID;ANDROID;APP_UNIFIED_HEADERS;_X86;__i386__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_ANDROID;ANDROID;APP_UNIFIED_HEADERS;_ARM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../..;../../src;../../../include;../../../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PositionIndependentCode>true</PositionIndependentCode>
     </ClCompile>

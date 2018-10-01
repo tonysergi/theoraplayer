@@ -12,8 +12,13 @@
 #define INLINE      __forceinline
 #define ARCH_ARM 0
 #define ARCH_MIPS 0
+#ifdef _WIN64
+#define ARCH_X86 0
+#define ARCH_X86_64 1
+#else
 #define ARCH_X86 1
 #define ARCH_X86_64 0
+#endif
 #define HAVE_EDSP 0
 #define HAVE_MEDIA 0
 #define HAVE_NEON 0
@@ -22,7 +27,8 @@
 #define HAVE_DSPR2 0
 #define HAVE_MSA 0
 #define HAVE_MIPS64 0
-#define HAVE_MMX 1
+//Tony; turning off mmx.
+#define HAVE_MMX 0
 #define HAVE_SSE 1
 #define HAVE_SSE2 1
 #define HAVE_SSE3 1
