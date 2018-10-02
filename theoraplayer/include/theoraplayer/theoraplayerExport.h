@@ -13,7 +13,7 @@
 #ifndef THEORAPLAYER_EXPORT_H
 #define THEORAPLAYER_EXPORT_H
 
-	#ifdef _LIB
+#if defined( _LIB ) || defined( LIBTHEORA_STATIC )
 		#define theoraplayerExport
 		#define theoraplayerFnExport
 	#else
