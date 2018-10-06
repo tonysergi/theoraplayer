@@ -13,7 +13,7 @@
 #ifndef CLIPAVFOUNDATION_EXPORT_H
 #define CLIPAVFOUNDATION_EXPORT_H
 
-	#ifdef _LIB
+	#if defined( _LIB ) || defined( LIBTHEORA_STATIC )
 		#define clipavfoundationExport
 		#define clipavfoundationFnExport
 	#else

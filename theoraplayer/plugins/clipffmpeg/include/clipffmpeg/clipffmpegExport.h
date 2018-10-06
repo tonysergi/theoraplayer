@@ -13,7 +13,7 @@
 #ifndef CLIPFFMPEG_EXPORT_H
 #define CLIPFFMPEG_EXPORT_H
 
-	#ifdef _LIB
+	#if defined( _LIB ) || defined( LIBTHEORA_STATIC )
 		#define clipffmegExport
 		#define clipffmegFnExport
 	#else

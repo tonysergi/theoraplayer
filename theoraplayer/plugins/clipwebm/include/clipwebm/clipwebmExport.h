@@ -13,7 +13,7 @@
 #ifndef CLIPWEBM_EXPORT_H
 #define CLIPWEBM_EXPORT_H
 
-	#ifdef _LIB
+	#if defined( _LIB ) || defined( LIBTHEORA_STATIC )
 		#define clipwebmExport
 		#define clipwebmFnExport
 	#else
